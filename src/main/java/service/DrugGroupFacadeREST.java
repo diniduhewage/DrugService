@@ -19,6 +19,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import lk.gov.health.drugservice.DrugGroup;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -39,6 +41,7 @@ public class DrugGroupFacadeREST extends AbstractFacade<DrugGroup> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(DrugGroup entity) {
+        entity.setId(null);
         super.create(entity);
     }
 
@@ -63,10 +66,23 @@ public class DrugGroupFacadeREST extends AbstractFacade<DrugGroup> {
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<DrugGroup> findAll() {
-        return super.findAll();
+    public String getAll() {
+        JSONArray array = new JSONArray();
+        List<DrugGroup> object = super.findAll();
+
+        for (int i = 0; i < object.size(); i++) {
+            JSONObject jo = new JSONObject();
+            jo.put("id", object.get(i).getId());
+            jo.put("drugGroup", object.get(i).getDrugGroup());
+            jo.put("description", object.get(i).getDescription());
+            if(object.get(i).getParentGroup() != null)
+                jo.put("parentGroup", getRoomTypeObjct(object.get(i).getParentGroup()));
+            else
+               jo.put("parentGroup", null);  
+            array.add(jo);
+        }
+        return JSONArray.toJSONString(array);
     }
 
     @GET
@@ -87,5 +103,14 @@ public class DrugGroupFacadeREST extends AbstractFacade<DrugGroup> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    public JSONObject getRoomTypeObjct(DrugGroup obj) {
+        JSONObject tempObj = new JSONObject();
+        tempObj.put("id", obj.getId());
+        tempObj.put("drugGroup", obj.getDrugGroup());
+        tempObj.put("description", obj.getDescription());
+        tempObj.put("parentGroup", null);
+        return tempObj;
+    }
+
 }
