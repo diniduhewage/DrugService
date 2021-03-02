@@ -39,6 +39,7 @@ public class DrugFrequencyFacadeREST extends AbstractFacade<DrugFrequency> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(DrugFrequency entity) {
+        entity.setId(null);
         super.create(entity);
     }
 

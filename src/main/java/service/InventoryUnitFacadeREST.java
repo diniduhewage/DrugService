@@ -39,6 +39,7 @@ public class InventoryUnitFacadeREST extends AbstractFacade<InventoryUnit> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(InventoryUnit entity) {
+        entity.setId(null);
         super.create(entity);
     }
 
